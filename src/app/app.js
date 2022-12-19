@@ -9,8 +9,8 @@ app.use(cors());
 
 app.use(express.json());
 
-app.get("/", async (request,response) => {
-	try{
+app.get("/", async (request, response) => {
+	try {
 
 		console.log(request.query.url)
 
@@ -22,17 +22,18 @@ app.get("/", async (request,response) => {
 
 		return response.status(200).json({
 			url: `https://www.youtube.com/embed/${v_id}`,
-			info: info.formats.sort((a,b) => {
+			info: info.formats.sort((a, b) => {
 				return a.mimeType < b.mimeType
 			})
 		});
 
-	}catch(err){
+	} catch (err) {
 		console.log(err);
 		return response.status(400).json({
-			error:"Não foi possivel listar os videos"
+			error: "Não foi possivel listar os videos"
 		})
 	}
 });
+
 
 module.exports = app;
