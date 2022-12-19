@@ -2,20 +2,19 @@ require('dotenv').config()
 const express = require('express');
 const ytdl = require("ytdl-core")
 const cors = require('cors');
+const { getPostLink } = require('./service/instagram');
 const app = express();
 
 app.use(cors());
-
-
 app.use(express.json());
 
-app.get("/", async (request, response) => {
+app.post("/yt", async (request, response) => {
 	try {
+		const { url } = request.body;
+		console.log(url)
 
-		console.log(request.query.url)
-
-		const v_id = request.query.url.split("v=")[1];
-		const info = await ytdl.getInfo(request.query.url);
+		const v_id = url.split("v=")[1];
+		const info = await ytdl.getInfo(url);
 
 		console.log(info.formats[4]);
 		console.log(info.formats[1]);
@@ -35,5 +34,16 @@ app.get("/", async (request, response) => {
 	}
 });
 
+app.post("/instagram", async (request, response) => {
+	try {
+		const { url } = request.body;
+		const item = await getPostLink(url);
+		return response.status(200).json({ item });
+	} catch (err) {
+		return response.status(400).json({
+			error: "Houve um erro ao tentar buscar o vídeo."
+		})
+	}
+});
 
 module.exports = app;
